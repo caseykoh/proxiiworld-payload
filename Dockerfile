@@ -9,6 +9,17 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# ADDED CODE 1 START
+# Set up pnpm
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+# Update Corepack to the version with the fix and enable PNPM
+RUN npm install -g corepack@0.31.0 && \
+    corepack enable && \
+    corepack prepare pnpm@9.15.4 --activate
+# ADDED CODE 1 END
+
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
@@ -29,6 +40,17 @@ COPY . .
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
+
+# ADDED CODE 2 START
+# Set up pnpm
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+# Update Corepack to the version with the fix and enable PNPM
+RUN npm install -g corepack@0.31.0 && \
+    corepack enable && \
+    corepack prepare pnpm@9.15.4 --activate
+# ADDED CODE 2 END
 
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
